@@ -1,0 +1,8 @@
+{
+  "name": "fintracker",
+  "description": "A responsive personal finance tracker with dashboard, transaction logging, and budget management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
