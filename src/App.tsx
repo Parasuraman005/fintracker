@@ -4,27 +4,28 @@
  */
 
 import { useState, useEffect } from 'react';
-import SplashScreen from './components/SplashScreen';
-import Sidebar from './components/Sidebar';
-import MobileNav from './components/MobileNav';
-import Dashboard from './components/Dashboard';
-import TransactionsPage from './components/TransactionsPage';
-import AddTransactionPage from './components/AddTransactionPage';
-import ReportsPage from './components/ReportsPage';
-import BudgetsPage from './components/BudgetsPage';
-import CategoriesPage from './components/CategoriesPage';
-import WalletsPage from './components/WalletsPage';
-import NotificationsPage from './components/NotificationsPage';
-import BillsPage from './components/BillsPage';
-import CalendarPage from './components/CalendarPage';
-import CategoryReportPage from './components/CategoryReportPage';
-import { IncomeReportPage } from './components/IncomeReportPage';
-import { ExpenseReportPage } from './components/ExpenseReportPage';
-import { BillsReportPage } from './components/BillsReportPage';
-import SettingsPage from './components/SettingsPage';
+import SplashScreen from './components/layout/SplashScreen';
+import Sidebar from './components/layout/Sidebar';
+import MobileNav from './components/layout/MobileNav';
+import Dashboard from './components/pages/Dashboard';
+import TransactionsPage from './components/pages/TransactionsPage';
+import AddTransactionPage from './components/pages/AddTransactionPage';
+import ReportsPage from './components/pages/ReportsPage';
+import BudgetsPage from './components/pages/BudgetsPage';
+import CategoriesPage from './components/pages/CategoriesPage';
+import WalletsPage from './components/pages/WalletsPage';
+import NotificationsPage from './components/pages/NotificationsPage';
+import BillsPage from './components/pages/BillsPage';
+import CalendarPage from './components/pages/CalendarPage';
+import CategoryReportPage from './components/pages/CategoryReportPage';
+import { IncomeReportPage } from './components/pages/IncomeReportPage';
+import { ExpenseReportPage } from './components/pages/ExpenseReportPage';
+import { BillsReportPage } from './components/pages/BillsReportPage';
+import SettingsPage from './components/pages/SettingsPage';
 import { cn } from './lib/utils';
 import { Transaction, Wallet, Bill } from './types';
-import { MOCK_TRANSACTIONS, MOCK_WALLETS, MOCK_USER_PROFILE, MOCK_PERSONALIZATION, MOCK_FINANCE, MOCK_BILLS } from './mockData';
+import { MOCK_TRANSACTIONS, MOCK_WALLETS, MOCK_USER_PROFILE, MOCK_PERSONALIZATION, MOCK_FINANCE, MOCK_BILLS } from './data/mockData';
+import { requestNotificationPermission, sendNotification } from './lib/notifications';
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -86,6 +87,8 @@ export default function App() {
   useEffect(() => {
     if (!showSplash) {
       setIsSidebarOpen(false);
+      // Request notification permission on first interaction/load
+      requestNotificationPermission();
     }
   }, [showSplash]);
 
@@ -165,6 +168,12 @@ export default function App() {
         }));
       }
       setTransactions([trn, ...transactions]);
+      
+      // Send notification for new transaction
+      sendNotification('Transaction Recorded', {
+        body: `${trn.type === 'income' ? 'Income' : 'Expense'} of ${trn.amount.toLocaleString()} for ${trn.description} saved successfully.`,
+        tag: 'transaction-save'
+      });
     }
     setEditingTransaction(null);
     setActiveTab('transactions');
