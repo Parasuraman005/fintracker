@@ -1,0 +1,17 @@
+{
+  "name": "FinTrack - Financial Tracker",
+  "short_name": "FinTrack",
+  "description": "Your Ultimate Financial Buddy for tracking expenses, income, and budgets.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#10b981",
+  "icons": [
+    {
+      "src": "/fintracker.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
