@@ -57,7 +57,26 @@ export default function AddTransactionPage({ transaction, initialDate, wallets, 
   const validate = () => {
     const newErrors: Record<string, string> = {};
     if (!description.trim()) newErrors.description = 'Description is required';
-    if (!amount || Number(amount) <= 0) newErrors.amount = 'Valid amount is required';
+    
+    const amountNum = Number(amount);
+    if (!amount || amountNum <= 0) {
+      newErrors.amount = 'Valid amount is required';
+    } else if (type === 'expense' && selectedWallet) {
+      const wallet = wallets.find(w => w.id === selectedWallet);
+      
+      // If editing, we need to account for the original transaction amount being "returned" first
+      let currentBalance = wallet?.balance || 0;
+      if (transaction && transaction.wallet_id === selectedWallet) {
+        currentBalance = transaction.type === 'income' 
+          ? currentBalance - transaction.amount 
+          : currentBalance + transaction.amount;
+      }
+
+      if (currentBalance < amountNum) {
+        newErrors.amount = `Insufficient funds (Available: ${currencySymbol}${currentBalance.toLocaleString()})`;
+      }
+    }
+
     if (!selectedWallet) newErrors.wallet = 'Please select a wallet';
     if (!category) newErrors.category = 'Please select a category';
     
@@ -262,27 +281,52 @@ export default function AddTransactionPage({ transaction, initialDate, wallets, 
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {wallets.map((wallet) => {
                 const Icon = walletIcons[wallet.type === 'bank' ? 'Bank' : 'Wallet'] || WalletIcon;
+                const amountNum = Number(amount) || 0;
+                
+                // Calculate available balance for this wallet
+                let availableBalance = wallet.balance;
+                if (transaction && transaction.wallet_id === wallet.id) {
+                  availableBalance = transaction.type === 'income' 
+                    ? wallet.balance - transaction.amount 
+                    : wallet.balance + transaction.amount;
+                }
+                
+                const isInsufficient = type === 'expense' && amountNum > availableBalance;
+
                 return (
                   <button
                     key={wallet.id}
                     onClick={() => setSelectedWallet(wallet.id)}
                     className={cn(
-                      "flex flex-col items-center justify-center rounded-xl border p-3 transition-all",
+                      "flex flex-col items-center justify-center rounded-xl border p-3 transition-all relative overflow-hidden",
                       selectedWallet === wallet.id
                         ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-500/10"
-                        : "border-zinc-200 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
+                        : isInsufficient
+                          ? "border-rose-200 bg-rose-50/50 dark:border-rose-900/30 dark:bg-rose-900/10"
+                          : "border-zinc-200 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
                     )}
                   >
+                    {isInsufficient && (
+                      <div className="absolute top-0 right-0 p-1">
+                        <div className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-pulse" />
+                      </div>
+                    )}
                     <Icon className={cn(
                       "mb-2 h-5 w-5",
-                      selectedWallet === wallet.id ? "text-emerald-600 dark:text-emerald-400" : "text-zinc-400"
+                      selectedWallet === wallet.id ? "text-emerald-600 dark:text-emerald-400" : isInsufficient ? "text-rose-400" : "text-zinc-400"
                     )} />
                     <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 truncate w-full text-center px-1">
                       {wallet.name || wallet.bankName}
                     </span>
-                    <span className="mt-1 text-xs font-semibold text-zinc-900 dark:text-white">
+                    <span className={cn(
+                      "mt-1 text-xs font-semibold",
+                      isInsufficient ? "text-rose-600 dark:text-rose-400" : "text-zinc-900 dark:text-white"
+                    )}>
                       {currencySymbol}{wallet.balance.toLocaleString()}
                     </span>
+                    {isInsufficient && (
+                      <span className="mt-0.5 text-[8px] font-bold text-rose-500 uppercase">Low Funds</span>
+                    )}
                   </button>
                 );
               })}

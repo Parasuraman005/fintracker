@@ -206,100 +206,156 @@ export default function TransactionsPage({
       </div>
 
       {/* Summary Row */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
-          <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">Income Count</p>
-          <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400">{summary.incomeCount}</p>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Income Count</p>
+          <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{summary.incomeCount}</p>
         </div>
-        <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
-          <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">Expense Count</p>
-          <p className="text-xl font-bold text-rose-600 dark:text-rose-400">{summary.expenseCount}</p>
+        <div className="rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Expense Count</p>
+          <p className="text-lg font-bold text-rose-600 dark:text-rose-400">{summary.expenseCount}</p>
         </div>
-        <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
-          <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">Total Income</p>
-          <p className="text-xl font-bold text-zinc-900 dark:text-white">{currencySymbol}{summary.incomeTotal.toLocaleString()}</p>
+        <div className="rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Total Income</p>
+          <p className="text-lg font-bold text-zinc-900 dark:text-white truncate">{currencySymbol}{summary.incomeTotal.toLocaleString()}</p>
         </div>
-        <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-950">
-          <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">Total Expense</p>
-          <p className="text-xl font-bold text-zinc-900 dark:text-white">{currencySymbol}{summary.expenseTotal.toLocaleString()}</p>
+        <div className="rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Total Expense</p>
+          <p className="text-lg font-bold text-zinc-900 dark:text-white truncate">{currencySymbol}{summary.expenseTotal.toLocaleString()}</p>
         </div>
       </div>
 
-      {/* Table */}
-      <div className="rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-950 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead>
-              <tr className="border-b border-zinc-200 bg-zinc-50/50 text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900/50">
-                <th className="px-6 py-4 font-medium">Trn ID</th>
-                <th className="px-6 py-4 font-medium">Date</th>
-                <th className="px-6 py-4 font-medium">Description</th>
-                <th className="px-6 py-4 font-medium">Category</th>
-                <th className="px-6 py-4 font-medium text-right">Amount</th>
-                <th className="px-6 py-4 font-medium">Type</th>
-                <th className="px-6 py-4 font-medium text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
-              {filteredTransactions.map((t) => (
-                <tr key={t.trn_id} className="group hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors">
-                  <td className="px-6 py-4 font-mono text-xs text-zinc-500 dark:text-zinc-400">
-                    {t.trn_id}
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-zinc-600 dark:text-zinc-400">
-                    {t.date}
-                  </td>
-                  <td className="px-6 py-4 font-medium text-zinc-900 dark:text-white">
-                    {t.description}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+      {/* Transactions List */}
+      <div className="space-y-4">
+        {/* Mobile View: Cards */}
+        <div className="grid gap-3 md:hidden">
+          {filteredTransactions.map((t) => (
+            <div 
+              key={t.trn_id}
+              className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950"
+            >
+              <div className="flex items-start justify-between">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className={cn(
+                      "h-2 w-2 rounded-full",
+                      t.type === 'income' ? "bg-emerald-500" : "bg-rose-500"
+                    )} />
+                    <p className="text-sm font-bold text-zinc-900 dark:text-white line-clamp-1">
+                      {t.description}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 text-[10px] font-medium text-zinc-500">
+                    <span className="rounded-md bg-zinc-100 px-1.5 py-0.5 dark:bg-zinc-800">
                       {t.category}
                     </span>
-                  </td>
-                  <td className={cn(
-                    "px-6 py-4 font-semibold text-right",
+                    <span>•</span>
+                    <span>{t.date}</span>
+                    <span>•</span>
+                    <span className="font-mono">{t.trn_id}</span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className={cn(
+                    "text-sm font-black",
                     t.type === 'income' ? "text-emerald-600 dark:text-emerald-400" : "text-zinc-900 dark:text-white"
                   )}>
                     {t.type === 'income' ? '+' : '-'}{currencySymbol}{t.amount.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={cn(
-                      "inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium",
-                      t.type === 'income' 
-                        ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-400" 
-                        : "bg-rose-50 text-rose-700 dark:bg-rose-400/10 dark:text-rose-400"
+                  </p>
+                  <div className="mt-2 flex items-center justify-end gap-2">
+                    <button 
+                      onClick={() => onEditClick(t)}
+                      className="rounded-lg bg-zinc-50 p-1.5 text-zinc-400 hover:text-emerald-600 dark:bg-zinc-900"
+                    >
+                      <Edit3 className="h-3.5 w-3.5" />
+                    </button>
+                    <button 
+                      onClick={() => onDeleteClick(t.trn_id)}
+                      className="rounded-lg bg-zinc-50 p-1.5 text-zinc-400 hover:text-rose-600 dark:bg-zinc-900"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+          {filteredTransactions.length === 0 && (
+            <div className="rounded-2xl border border-dashed border-zinc-200 p-8 text-center dark:border-zinc-800">
+              <p className="text-sm text-zinc-500">No transactions found matching your filters.</p>
+            </div>
+          )}
+        </div>
+
+        {/* Desktop View: Table */}
+        <div className="hidden md:block rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-950 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="border-b border-zinc-200 bg-zinc-50/50 text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900/50">
+                  <th className="px-6 py-4 font-medium">Trn ID</th>
+                  <th className="px-6 py-4 font-medium">Date</th>
+                  <th className="px-6 py-4 font-medium">Description</th>
+                  <th className="px-6 py-4 font-medium">Category</th>
+                  <th className="px-6 py-4 font-medium text-right">Amount</th>
+                  <th className="px-6 py-4 font-medium">Type</th>
+                  <th className="px-6 py-4 font-medium text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+                {filteredTransactions.map((t) => (
+                  <tr key={t.trn_id} className="group hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors">
+                    <td className="px-6 py-4 font-mono text-xs text-zinc-500 dark:text-zinc-400">
+                      {t.trn_id}
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4 text-zinc-600 dark:text-zinc-400">
+                      {t.date}
+                    </td>
+                    <td className="px-6 py-4 font-medium text-zinc-900 dark:text-white">
+                      {t.description}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+                        {t.category}
+                      </span>
+                    </td>
+                    <td className={cn(
+                      "px-6 py-4 font-semibold text-right",
+                      t.type === 'income' ? "text-emerald-600 dark:text-emerald-400" : "text-zinc-900 dark:text-white"
                     )}>
-                      {t.type.charAt(0).toUpperCase() + t.type.slice(1)}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center justify-center gap-2">
-                      <button 
-                        onClick={() => onEditClick(t)}
-                        className="p-1 text-zinc-400 hover:text-emerald-600"
-                      >
-                        <Edit3 className="h-4 w-4" />
-                      </button>
-                      <button 
-                        onClick={() => onDeleteClick(t.trn_id)}
-                        className="p-1 text-zinc-400 hover:text-rose-600"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {filteredTransactions.length === 0 && (
-                <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-zinc-500">
-                    No transactions found matching your filters.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                      {t.type === 'income' ? '+' : '-'}{currencySymbol}{t.amount.toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={cn(
+                        "inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium",
+                        t.type === 'income' 
+                          ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-400" 
+                          : "bg-rose-50 text-rose-700 dark:bg-rose-400/10 dark:text-rose-400"
+                      )}>
+                        {t.type.charAt(0).toUpperCase() + t.type.slice(1)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-center gap-2">
+                        <button 
+                          onClick={() => onEditClick(t)}
+                          className="p-1 text-zinc-400 hover:text-emerald-600"
+                        >
+                          <Edit3 className="h-4 w-4" />
+                        </button>
+                        <button 
+                          onClick={() => onDeleteClick(t.trn_id)}
+                          className="p-1 text-zinc-400 hover:text-rose-600"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 

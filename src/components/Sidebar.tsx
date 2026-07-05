@@ -26,13 +26,13 @@ export const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'transactions', label: 'Transactions', icon: ArrowLeftRight },
   { id: 'add', label: 'Add Transaction', icon: PlusCircle },
-  { id: 'reports', label: 'Reports & Analytics', icon: BarChart3 },
+  { id: 'wallets', label: 'Wallets', icon: Wallet },
   { id: 'budgets', label: 'Budgets', icon: Briefcase },
   { id: 'categories', label: 'Categories', icon: Tags },
-  { id: 'wallets', label: 'Wallets', icon: Wallet },
-  { id: 'notifications', label: 'Notifications', icon: Bell },
   { id: 'bills', label: 'Bills', icon: FileText },
   { id: 'calendar', label: 'Calendar', icon: CalendarDays },
+  { id: 'reports', label: 'Reports & Analytics', icon: BarChart3 },
+  { id: 'notifications', label: 'Notifications', icon: Bell },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 

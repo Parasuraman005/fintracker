@@ -16,8 +16,8 @@ export default function MobileNav({ activeTab, setActiveTab }: MobileNavProps) {
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'transactions', label: 'Transactions', icon: ArrowLeftRight },
     { id: 'add', label: 'Add', icon: PlusCircle },
-    { id: 'reports', label: 'Reports', icon: BarChart3 },
     { id: 'wallets', label: 'Wallets', icon: Wallet },
+    { id: 'reports', label: 'Reports', icon: BarChart3 },
   ];
 
   return (

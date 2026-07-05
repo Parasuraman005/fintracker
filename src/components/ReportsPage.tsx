@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 
-const reportOptions = [
+const reportOptionsFallback = [
   { id: 'transactions', label: 'Transactions Report', icon: FileText, color: 'text-blue-500', bg: 'bg-blue-50' },
   { id: 'category', label: 'Category Wise Report', icon: Tags, color: 'text-purple-500', bg: 'bg-purple-50' },
   { id: 'bills', label: 'Bills Reports', icon: Receipt, color: 'text-amber-500', bg: 'bg-amber-50' },
@@ -17,19 +17,46 @@ const reportOptions = [
   { id: 'wallet', label: 'Wallet Wise Report', icon: Wallet, color: 'text-indigo-500', bg: 'bg-indigo-50' },
 ];
 
-export default function ReportsPage({ setActiveTab }: { setActiveTab: (tab: string) => void }) {
+export default function ReportsPage({ 
+  setActiveTab,
+  transactions,
+  bills,
+  wallets
+}: { 
+  setActiveTab: (tab: string) => void,
+  transactions: any[],
+  bills: any[],
+  wallets: any[]
+}) {
+  const incomeCount = transactions.filter(t => t.type === 'income').length;
+  const expenseCount = transactions.filter(t => t.type === 'expense').length;
+  const pendingBills = bills.filter(b => !b.isPaid).length;
+
+  const reportOptions = [
+    { id: 'transactions', label: 'Transactions Report', icon: FileText, color: 'text-blue-500', bg: 'bg-blue-50', count: transactions.length, unit: 'Items' },
+    { id: 'category', label: 'Category Wise Report', icon: Tags, color: 'text-purple-500', bg: 'bg-purple-50', count: [...new Set(transactions.map(t => t.category))].length, unit: 'Cats' },
+    { id: 'bills', label: 'Bills Reports', icon: Receipt, color: 'text-amber-500', bg: 'bg-amber-50', count: pendingBills, unit: 'Pending' },
+    { id: 'income', label: 'Income Report', icon: TrendingUp, color: 'text-emerald-500', bg: 'bg-emerald-50', count: incomeCount, unit: 'Items' },
+    { id: 'expense', label: 'Expense Report', icon: TrendingDown, color: 'text-rose-500', bg: 'bg-rose-50', count: expenseCount, unit: 'Items' },
+    { id: 'wallet', label: 'Wallet Wise Report', icon: Wallet, color: 'text-indigo-500', bg: 'bg-indigo-50', count: wallets.length, unit: 'Wallets' },
+  ];
+
   const handleReportClick = (id: string) => {
     switch (id) {
       case 'transactions':
-      case 'income':
-      case 'expense':
         setActiveTab('transactions');
+        break;
+      case 'income':
+        setActiveTab('income-report');
+        break;
+      case 'expense':
+        setActiveTab('expense-report');
         break;
       case 'category':
         setActiveTab('category-report');
         break;
       case 'bills':
-        setActiveTab('bills');
+        setActiveTab('bills-report');
         break;
       case 'wallet':
         setActiveTab('wallets');
@@ -66,6 +93,14 @@ export default function ReportsPage({ setActiveTab }: { setActiveTab: (tab: stri
             <span className="text-center text-sm font-bold text-zinc-900 dark:text-white">
               {option.label}
             </span>
+            <div className="mt-2 flex items-center gap-1.5">
+              <span className={`text-[10px] font-black uppercase tracking-widest ${option.color}`}>
+                {option.count}
+              </span>
+              <span className="text-[10px] font-medium text-zinc-400 uppercase tracking-widest">
+                {option.unit}
+              </span>
+            </div>
           </motion.button>
         ))}
       </div>

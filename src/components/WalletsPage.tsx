@@ -61,11 +61,19 @@ export default function WalletsPage({
     const newErrors: Record<string, string> = {};
     if (walletType === 'cash') {
       if (!cashForm.name.trim()) newErrors.name = 'Wallet name is required';
-      if (!cashForm.amount || Number(cashForm.amount) < 0) newErrors.amount = 'Valid amount is required';
+      if (!cashForm.amount) {
+        newErrors.amount = 'Initial balance is required';
+      } else if (Number(cashForm.amount) < 0) {
+        newErrors.amount = 'Amount cannot be negative';
+      }
     } else {
       if (!bankForm.bankName.trim()) newErrors.bankName = 'Bank name is required';
       if (!bankForm.accountHolderName.trim()) newErrors.accountHolderName = 'Account holder is required';
-      if (!bankForm.amount || Number(bankForm.amount) < 0) newErrors.amount = 'Valid amount is required';
+      if (!bankForm.amount) {
+        newErrors.amount = 'Initial balance is required';
+      } else if (Number(bankForm.amount) < 0) {
+        newErrors.amount = 'Amount cannot be negative';
+      }
     }
     
     setErrors(newErrors);

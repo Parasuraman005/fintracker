@@ -60,8 +60,27 @@ export default function Dashboard({
       </header>
 
       {/* Stats Grid */}
-      <div className="grid gap-6 sm:grid-cols-3">
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+      <motion.div 
+        variants={{
+          hidden: { opacity: 0 },
+          show: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.1
+            }
+          }
+        }}
+        initial="hidden"
+        animate="show"
+        className="grid gap-6 sm:grid-cols-3"
+      >
+        <motion.div 
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            show: { opacity: 1, y: 0 }
+          }}
+          className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950"
+        >
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Net Balance</span>
             <div className="rounded-full bg-emerald-500/10 p-2 text-emerald-600 dark:text-emerald-400">
@@ -76,9 +95,15 @@ export default function Dashboard({
               <span>Current available across all wallets</span>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+        <motion.div 
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            show: { opacity: 1, y: 0 }
+          }}
+          className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950"
+        >
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Total Income</span>
             <div className="rounded-full bg-emerald-500/10 p-2 text-emerald-600 dark:text-emerald-400">
@@ -94,9 +119,15 @@ export default function Dashboard({
               <span>+12.5% from last month</span>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+        <motion.div 
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            show: { opacity: 1, y: 0 }
+          }}
+          className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950"
+        >
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Total Expense</span>
             <div className="rounded-full bg-rose-500/10 p-2 text-rose-600 dark:text-rose-400">
@@ -112,11 +143,16 @@ export default function Dashboard({
               <span>+4.2% from last month</span>
             </div>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Chart Section */}
-      <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950"
+      >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">Financial Activity</h3>
           
@@ -205,10 +241,15 @@ export default function Dashboard({
             </AreaChart>
           </ResponsiveContainer>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Transaction Table */}
-      <div className="rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+      {/* Recent Transactions */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+        className="rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-950 overflow-hidden"
+      >
         <div className="flex items-center justify-between border-b border-zinc-200 p-6 dark:border-zinc-800">
           <h3 className="text-lg font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
             <Clock className="h-5 w-5 text-zinc-400" />
@@ -221,7 +262,30 @@ export default function Dashboard({
             View All
           </button>
         </div>
-        <div className="overflow-x-auto">
+        
+        {/* Mobile View: List */}
+        <div className="divide-y divide-zinc-200 md:hidden dark:divide-zinc-800">
+          {recentTransactions.map((t) => (
+            <div key={t.trn_id} className="p-4 flex items-center justify-between">
+              <div className="space-y-1">
+                <p className="text-sm font-bold text-zinc-900 dark:text-white">{t.description}</p>
+                <div className="flex items-center gap-2 text-[10px] text-zinc-500">
+                  <span className="rounded-md bg-zinc-100 px-1.5 py-0.5 dark:bg-zinc-800">{t.category}</span>
+                  <span>{t.date}</span>
+                </div>
+              </div>
+              <p className={cn(
+                "text-sm font-black",
+                t.type === 'income' ? "text-emerald-600 dark:text-emerald-400" : "text-zinc-900 dark:text-white"
+              )}>
+                {t.type === 'income' ? '+' : '-'}{currencySymbol}{t.amount.toLocaleString()}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop View: Table */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
               <tr className="border-b border-zinc-200 bg-zinc-50/50 text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900/50">
@@ -271,7 +335,7 @@ export default function Dashboard({
             </tbody>
           </table>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

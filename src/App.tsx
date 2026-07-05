@@ -18,6 +18,9 @@ import NotificationsPage from './components/NotificationsPage';
 import BillsPage from './components/BillsPage';
 import CalendarPage from './components/CalendarPage';
 import CategoryReportPage from './components/CategoryReportPage';
+import { IncomeReportPage } from './components/IncomeReportPage';
+import { ExpenseReportPage } from './components/ExpenseReportPage';
+import { BillsReportPage } from './components/BillsReportPage';
 import SettingsPage from './components/SettingsPage';
 import { cn } from './lib/utils';
 import { Transaction, Wallet, Bill } from './types';
@@ -249,13 +252,42 @@ export default function App() {
           />
         );
       case 'reports':
-        return <ReportsPage setActiveTab={setActiveTab} />;
+        return (
+          <ReportsPage 
+            setActiveTab={setActiveTab} 
+            transactions={transactions}
+            bills={bills}
+            wallets={wallets}
+          />
+        );
       case 'category-report':
         return (
           <CategoryReportPage 
             transactions={transactions} 
             financeSettings={financeSettings}
             onBack={() => setActiveTab('reports')} 
+          />
+        );
+      case 'bills-report':
+        return (
+          <BillsReportPage 
+            bills={bills}
+            financeSettings={financeSettings}
+            onBack={() => setActiveTab('reports')} 
+          />
+        );
+      case 'income-report':
+        return (
+          <IncomeReportPage 
+            transactions={transactions} 
+            financeSettings={financeSettings}
+          />
+        );
+      case 'expense-report':
+        return (
+          <ExpenseReportPage 
+            transactions={transactions} 
+            financeSettings={financeSettings}
           />
         );
       case 'budgets':

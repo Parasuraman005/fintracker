@@ -54,6 +54,18 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
               Spend smarter, flex later
             </p>
           </motion.div>
+
+          {/* Footer Credit */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 1.2 }}
+            className="absolute bottom-12 text-center"
+          >
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-600">
+              developed & designed by parasu raman
+            </p>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>

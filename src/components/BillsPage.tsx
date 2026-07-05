@@ -117,7 +117,17 @@ export default function BillsPage({
 
   const validatePay = () => {
     const newErrors: Record<string, string> = {};
-    if (!payForm.amountPaid || Number(payForm.amountPaid) <= 0) newErrors.amount = 'Valid amount is required';
+    const amountNum = Number(payForm.amountPaid);
+    
+    if (!payForm.amountPaid || amountNum <= 0) {
+      newErrors.amount = 'Valid amount is required';
+    } else if (payForm.walletId) {
+      const wallet = wallets.find(w => w.id === payForm.walletId);
+      if (wallet && amountNum > wallet.balance) {
+        newErrors.amount = `Insufficient funds (Balance: ${currencySymbol}${wallet.balance.toLocaleString()})`;
+      }
+    }
+
     if (!payForm.walletId) newErrors.wallet = 'Select a wallet';
     
     setPayErrors(newErrors);
